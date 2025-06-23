@@ -324,7 +324,7 @@ export default function Navbar() {
           pathname === "/about/returns" ||
           pathname === "/about/faqs" ? (
             <div
-              className="relative flex items-center justify-between h-16 md:h-20 items-center"
+              className="relative flex items-center justify-between h-16 md:h-20 items-center hidden md:flex"
               style={{
                 transition: "height 0.5s",
                 height: "64px",
@@ -794,7 +794,7 @@ export default function Navbar() {
                 )}
               </div>
               {/* Nav Links and Right Icons in one row */}
-              <div className="w-full flex flex-row items-center justify-between mt-5 relative">
+              <div className="w-full flex flex-row items-center justify-between mt-5 relative hidden md:flex">
                 {/* Nav Links: Centered below big brand name when not scrolled, normal row when scrolled */}
                 <nav
                   className={cn(
@@ -1206,103 +1206,204 @@ export default function Navbar() {
           )}
           {/* MOBILE NAVBAR: Only this should remain for mobile (md:hidden) */}
           <div className="flex md:hidden w-full flex-row items-center justify-between h-14 px-2 gap-4">
-            {/* Hamburger menu */}
-            <button
-              onClick={() => setShowMobileMenu(true)}
-              className={cn(
-                'transition-colors flex items-center',
-                (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
-              )}
-              aria-label="Open menu"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-            {/* All icons in one row */}
-            <div className="flex flex-row items-center gap-4 ml-auto">
-              {/* Search button */}
-              <button
-                className={cn(
-                  'hover:opacity-70 transition-opacity',
-                  (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
-                )}
-                onClick={() => setShowSearchModal(true)}
-                aria-label="Search"
-                type="button"
-              >
-                <Search className="h-5 w-5" />
-              </button>
-              {/* User name (with avatar if available) */}
-              {userInfo ? (
-                <div className="flex items-center space-x-2">
-                  {profileImg ? (
-                    <Image
-                      src={profileImg}
-                      alt="Profile"
-                      width={28}
-                      height={28}
-                      className="rounded-full object-cover border-2 border-gold-400"
-                    />
-                  ) : (
-                    <UserCircleIcon className="h-6 w-6" />
-                  )}
-                  <span className="max-w-[80px] truncate text-white text-sm font-medium">{getTruncatedName(userInfo.name)}</span>
-                </div>
-              ) : (
+            {isScrolled ? (
+              // SCROLLED: ONLY NEW NAVBAR
+              <>
+                {/* Hamburger menu */}
                 <button
-                  onClick={() => setShowLoginModal(true)}
+                  onClick={() => setShowMobileMenu(true)}
                   className={cn(
-                    'text-sm font-medium hover:opacity-70 transition-opacity',
+                    'transition-colors flex items-center',
+                    'text-brand-dark'
+                  )}
+                  aria-label="Open menu"
+                >
+                  <Menu className="w-6 h-6" />
+                </button>
+                {/* Noamani brand */}
+                <Link
+                  href="/"
+                  className="font-serif font-extrabold tracking-wider select-none text-lg text-brand-dark mx-2"
+                  style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.08em" }}
+                >
+                  Noamani
+                </Link>
+                {/* Rest of the icons */}
+                <div className="flex flex-row items-center gap-3 ml-auto">
+                  {/* Search button */}
+                  <button
+                    className="hover:opacity-70 transition-opacity text-brand-dark"
+                    onClick={() => setShowSearchModal(true)}
+                    aria-label="Search"
+                    type="button"
+                  >
+                    <Search className="h-5 w-5" />
+                  </button>
+                  {/* User name (with avatar if available) */}
+                  {userInfo ? (
+                    <div className="flex items-center space-x-2">
+                      {profileImg ? (
+                        <Image
+                          src={profileImg}
+                          alt="Profile"
+                          width={28}
+                          height={28}
+                          className="rounded-full object-cover border-2 border-gold-400"
+                        />
+                      ) : (
+                        <UserCircleIcon className="h-6 w-6" />
+                      )}
+                      <span className="max-w-[80px] truncate text-brand-dark text-sm font-medium">{getTruncatedName(userInfo.name)}</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowLoginModal(true)}
+                      className="text-sm font-medium hover:opacity-70 transition-opacity text-brand-dark"
+                    >
+                      Login
+                    </button>
+                  )}
+                  {/* Cart icon */}
+                  <Link
+                    href="/cart"
+                    className="hover:opacity-70 transition-opacity relative text-brand-dark"
+                  >
+                    <ShoppingBagIcon className="h-5 w-5" />
+                    {cartItemsCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {cartItemsCount}
+                      </span>
+                    )}
+                  </Link>
+                  {/* Earth/Country icon */}
+                  <div className="flex items-center h-full">
+                    <div
+                      ref={earthRef}
+                      className="relative flex items-center justify-center h-full"
+                      style={{ width: 28, height: 28, marginTop: '0px' }}
+                    >
+                      <motion.button
+                        className="hover:opacity-90 transition-opacity text-brand-dark"
+                        aria-label="Select country"
+                        style={{
+                          position: 'relative',
+                          zIndex: 100,
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          boxShadow: 'none',
+                        }}
+                        onClick={() => setShowCountryDropdown((v) => !v)}
+                        whileHover={{ scale: 1.12 }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        <Globe className="h-6 w-6" />
+                      </motion.button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              // NOT SCROLLED: ONLY OLD NAVBAR
+              <>
+                {/* Hamburger menu */}
+                <button
+                  onClick={() => setShowMobileMenu(true)}
+                  className={cn(
+                    'transition-colors flex items-center',
                     (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
                   )}
+                  aria-label="Open menu"
                 >
-                  Login
+                  <Menu className="w-6 h-6" />
                 </button>
-              )}
-              {/* Cart icon */}
-              <Link
-                href="/cart"
-                className={cn(
-                  'hover:opacity-70 transition-opacity relative',
-                  (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
-                )}
-              >
-                <ShoppingBagIcon className="h-5 w-5" />
-                {cartItemsCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartItemsCount}
-                  </span>
-                )}
-              </Link>
-              {/* Earth/Country icon */}
-              <div className="flex items-center h-full">
-                <div
-                  ref={earthRef}
-                  className="relative flex items-center justify-center h-full"
-                  style={{ width: 28, height: 28, marginTop: '0px' }}
+                {/* Search button - moved next to hamburger */}
+                <button
+                  className={cn(
+                    'hover:opacity-70 transition-opacity',
+                    (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
+                  )}
+                  onClick={() => setShowSearchModal(true)}
+                  aria-label="Search"
+                  type="button"
                 >
-                  <motion.button
+                  <Search className="h-5 w-5" />
+                </button>
+                <div className="flex flex-row items-center gap-4 ml-auto">
+                  {/* User name (with avatar if available) */}
+                  {userInfo ? (
+                    <div className="flex items-center space-x-2">
+                      {profileImg ? (
+                        <Image
+                          src={profileImg}
+                          alt="Profile"
+                          width={28}
+                          height={28}
+                          className="rounded-full object-cover border-2 border-gold-400"
+                        />
+                      ) : (
+                        <UserCircleIcon className="h-6 w-6" />
+                      )}
+                      <span className="max-w-[80px] truncate text-white text-sm font-medium">{getTruncatedName(userInfo.name)}</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowLoginModal(true)}
+                      className={cn(
+                        'text-sm font-medium hover:opacity-70 transition-opacity',
+                        (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
+                      )}
+                    >
+                      Login
+                    </button>
+                  )}
+                  {/* Cart icon */}
+                  <Link
+                    href="/cart"
                     className={cn(
-                      'hover:opacity-90 transition-opacity',
+                      'hover:opacity-70 transition-opacity relative',
                       (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
                     )}
-                    aria-label="Select country"
-                    style={{
-                      position: 'relative',
-                      zIndex: 100,
-                      background: 'none',
-                      border: 'none',
-                      padding: 0,
-                      boxShadow: 'none',
-                    }}
-                    onClick={() => setShowCountryDropdown((v) => !v)}
-                    whileHover={{ scale: 1.12 }}
-                    whileTap={{ scale: 0.97 }}
                   >
-                    <Globe className="h-6 w-6" />
-                  </motion.button>
+                    <ShoppingBagIcon className="h-5 w-5" />
+                    {cartItemsCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {cartItemsCount}
+                      </span>
+                    )}
+                  </Link>
+                  {/* Earth/Country icon */}
+                  <div className="flex items-center h-full">
+                    <div
+                      ref={earthRef}
+                      className="relative flex items-center justify-center h-full"
+                      style={{ width: 28, height: 28, marginTop: '0px' }}
+                    >
+                      <motion.button
+                        className={cn(
+                          'hover:opacity-90 transition-opacity',
+                          (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
+                        )}
+                        aria-label="Select country"
+                        style={{
+                          position: 'relative',
+                          zIndex: 100,
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          boxShadow: 'none',
+                        }}
+                        onClick={() => setShowCountryDropdown((v) => !v)}
+                        whileHover={{ scale: 1.12 }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        <Globe className="h-6 w-6" />
+                      </motion.button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </div>
 
