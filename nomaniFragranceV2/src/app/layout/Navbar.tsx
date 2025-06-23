@@ -494,10 +494,7 @@ export default function Navbar() {
                         <UserCircleIcon className="h-6 w-6" />
                       )}
                       <span
-                        className={cn(
-                          "max-w-[100px] truncate",
-                          pathname === '/about/shipping' ? 'text-black' : ''
-                        )}
+                        className={`max-w-[80px] truncate text-sm font-medium ${!isScrolled ? 'text-white' : 'text-brand-dark'}`}
                       >
                         {getTruncatedName(userInfo.name)}
                       </span>
@@ -652,10 +649,11 @@ export default function Navbar() {
                     <AnimatePresence>
                       {showCountryDropdown && (
                         <motion.div
-                          className="absolute left-1/2 top-1/2 flex items-center justify-center"
+                          className="absolute right-2 left-auto top-full flex items-center justify-center"
                           style={{
-                            transform: "translate(-50%, -50%)",
+                            transform: "translateY(8px)",
                             pointerEvents: "auto",
+                            zIndex: 200,
                           }}
                           initial={{ opacity: 0, scale: 0.7 }}
                           animate={{ opacity: 1, scale: 1 }}
@@ -946,17 +944,14 @@ export default function Navbar() {
                       )}
                     </div>
                   ) : userInfo ? (
-                    <div className="relative">
+                    <div className="relative flex items-center space-x-2">
                       <button
                         onClick={() => setShowDropdown(!showDropdown)}
-                        className={cn(
-                          "flex items-center space-x-2 text-sm font-medium hover:opacity-70 transition-opacity",
-                          isScrolled || isMobileMenuOpen
-                            ? "text-brand-dark"
-                            : "text-white"
-                        )}
+                        className="flex items-center space-x-2 focus:outline-none"
+                        aria-label="User menu"
+                        type="button"
                       >
-                        {profileImg && userInfo ? (
+                        {profileImg ? (
                           <Image
                             src={profileImg}
                             alt="Profile"
@@ -967,46 +962,47 @@ export default function Navbar() {
                         ) : (
                           <UserCircleIcon className="h-6 w-6" />
                         )}
-                        <span
-                          className={cn(
-                            "max-w-[100px] truncate",
-                            pathname === '/about/shipping' ? 'text-black' : ''
-                          )}
-                        >
-                          {getTruncatedName(userInfo.name)}
-                        </span>
+                        <span className={`max-w-[80px] truncate text-sm font-medium ${!isScrolled ? 'text-white' : 'text-brand-dark'}`}>{getTruncatedName(userInfo.name)}</span>
                       </button>
-                      {showDropdown && (
-                        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]">
-                          <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-200">
-                            Signed in as
-                            <br />
-                            <span className="font-medium text-gray-900 truncate block">
-                              {userInfo.email}
-                            </span>
-                          </div>
-                          <Link
-                            href="/profile"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setShowDropdown(false)}
+                      <AnimatePresence>
+                        {showDropdown && (
+                          <motion.div
+                            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.18 }}
                           >
-                            Profile
-                          </Link>
-                          <Link
-                            href="/orders"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            onClick={() => setShowDropdown(false)}
-                          >
-                            Orders
-                          </Link>
-                          <button
-                            onClick={handleUserLogout}
-                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            Logout
-                          </button>
-                        </div>
-                      )}
+                            <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-200">
+                              Signed in as
+                              <br />
+                              <span className="font-medium text-gray-900 truncate block">
+                                {userInfo.email}
+                              </span>
+                            </div>
+                            <Link
+                              href="/profile"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => setShowDropdown(false)}
+                            >
+                              Profile
+                            </Link>
+                            <Link
+                              href="/orders"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => setShowDropdown(false)}
+                            >
+                              Orders
+                            </Link>
+                            <button
+                              onClick={handleUserLogout}
+                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              Logout
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   ) : (
                     <button
@@ -1059,82 +1055,38 @@ export default function Navbar() {
                       </span>
                     )}
                   </Link>
-                  {/* Earth/Country Selector - moved to right side */}
-                  <div
-                    className="flex items-center h-full"
-                    style={{
-                      alignItems: "center",
-                      height: "100%",
-                      marginTop: 0,
-                    }}
-                  >
+                  {/* Earth/Country icon */}
+                  <div className="flex items-center h-full relative">
                     <div
                       ref={earthRef}
                       className="relative flex items-center justify-center h-full"
-                      style={{ width: 40, height: 40, marginTop: "0px" }}
+                      style={{ width: 28, height: 28, marginTop: '0px' }}
                     >
                       <motion.button
-                        className={cn(
-                          "hover:opacity-90 transition-opacity",
-                          !isScrolled &&
-                            (pathname === "/shop/all" ||
-                              pathname === "/shop/new")
-                            ? "text-black"
-                            : pathname &&
-                              (pathname.startsWith("/product/") ||
-                                pathname === "/about/shipping" ||
-                                pathname === "/about/returns" ||
-                                pathname === "/about/faqs")
-                            ? "text-black"
-                            : isScrolled || isMobileMenuOpen
-                            ? "text-brand-dark"
-                            : "text-white"
-                        )}
+                        className="hover:opacity-90 transition-opacity text-brand-dark"
                         aria-label="Select country"
                         style={{
-                          position: "relative",
+                          position: 'relative',
                           zIndex: 100,
-                          background: "none",
-                          border: "none",
+                          background: 'none',
+                          border: 'none',
                           padding: 0,
-                          boxShadow: "none",
+                          boxShadow: 'none',
                         }}
                         onClick={() => setShowCountryDropdown((v) => !v)}
-                        whileHover={{
-                          scale: 1.12,
-                          boxShadow: "0 0 32px 8px #00bfff, 0 0 0 6px #fff",
-                        }}
+                        whileHover={{ scale: 1.12 }}
                         whileTap={{ scale: 0.97 }}
-                        animate={{ rotate: 360 }}
-                        transition={{
-                          repeat: Infinity,
-                          duration: 8,
-                          ease: "linear",
-                        }}
                       >
-                        <Globe
-                          className="h-7 w-7"
-                          style={{
-                            color:
-                              pathname &&
-                              (pathname.startsWith("/product/") ||
-                                pathname === "/about/shipping" ||
-                                pathname === "/about/returns" ||
-                                pathname === "/about/faqs")
-                                ? "#000"
-                                : isScrolled
-                                ? "#000"
-                                : "#fff",
-                          }}
-                        />
+                        <Globe className="h-6 w-6" style={{ color: isScrolled ? '#000' : '#fff' }} />
                       </motion.button>
                       <AnimatePresence>
                         {showCountryDropdown && (
                           <motion.div
-                            className="absolute left-1/2 top-1/2 flex items-center justify-center"
+                            className="absolute right-2 left-auto top-full flex items-center justify-center"
                             style={{
-                              transform: "translate(-50%, -50%)",
+                              transform: "translateY(8px)",
                               pointerEvents: "auto",
+                              zIndex: 200,
                             }}
                             initial={{ opacity: 0, scale: 0.7 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -1154,8 +1106,8 @@ export default function Navbar() {
                                 const angle =
                                   (i / countryList.length) * 2 * Math.PI -
                                   Math.PI / 2;
-                                const radius = 18; // px, distance from center of circle (smaller)
-                                const x = Math.cos(angle) * radius + 30; // offset for center (smaller)
+                                const radius = 18;
+                                const x = Math.cos(angle) * radius + 30;
                                 const y = Math.sin(angle) * radius + 30;
                                 return (
                                   <motion.img
@@ -1166,7 +1118,7 @@ export default function Navbar() {
                                     style={{
                                       left: x,
                                       top: y,
-                                      zIndex: 101,
+                                      zIndex: 201,
                                       pointerEvents: "auto",
                                       border:
                                         selectedCountry === country.code
@@ -1184,9 +1136,7 @@ export default function Navbar() {
                                       damping: 20,
                                       delay: 0.05 * i,
                                     }}
-                                    onClick={() =>
-                                      handleCountrySelect(country.code)
-                                    }
+                                    onClick={() => handleCountrySelect(country.code)}
                                     whileHover={{
                                       scale: 1.2,
                                       boxShadow: "0 0 20px #FFD700",
@@ -1241,19 +1191,65 @@ export default function Navbar() {
                   </button>
                   {/* User name (with avatar if available) */}
                   {userInfo ? (
-                    <div className="flex items-center space-x-2">
-                      {profileImg ? (
-                        <Image
-                          src={profileImg}
-                          alt="Profile"
-                          width={28}
-                          height={28}
-                          className="rounded-full object-cover border-2 border-gold-400"
-                        />
-                      ) : (
-                        <UserCircleIcon className="h-6 w-6" />
-                      )}
-                      <span className="max-w-[80px] truncate text-brand-dark text-sm font-medium">{getTruncatedName(userInfo.name)}</span>
+                    <div className="relative flex items-center space-x-2">
+                      <button
+                        onClick={() => setShowDropdown(!showDropdown)}
+                        className="flex items-center space-x-2 focus:outline-none"
+                        aria-label="User menu"
+                        type="button"
+                      >
+                        {profileImg ? (
+                          <Image
+                            src={profileImg}
+                            alt="Profile"
+                            width={28}
+                            height={28}
+                            className="rounded-full object-cover border-2 border-gold-400"
+                          />
+                        ) : (
+                          <UserCircleIcon className="h-6 w-6" />
+                        )}
+                        <span className={`max-w-[80px] truncate text-sm font-medium ${!isScrolled ? 'text-white' : 'text-brand-dark'}`}>{getTruncatedName(userInfo.name)}</span>
+                      </button>
+                      <AnimatePresence>
+                        {showDropdown && (
+                          <motion.div
+                            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.18 }}
+                          >
+                            <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-200">
+                              Signed in as
+                              <br />
+                              <span className="font-medium text-gray-900 truncate block">
+                                {userInfo.email}
+                              </span>
+                            </div>
+                            <Link
+                              href="/profile"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => setShowDropdown(false)}
+                            >
+                              Profile
+                            </Link>
+                            <Link
+                              href="/orders"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => setShowDropdown(false)}
+                            >
+                              Orders
+                            </Link>
+                            <button
+                              onClick={handleUserLogout}
+                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              Logout
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   ) : (
                     <button
@@ -1276,7 +1272,7 @@ export default function Navbar() {
                     )}
                   </Link>
                   {/* Earth/Country icon */}
-                  <div className="flex items-center h-full">
+                  <div className="flex items-center h-full relative">
                     <div
                       ref={earthRef}
                       className="relative flex items-center justify-center h-full"
@@ -1297,8 +1293,77 @@ export default function Navbar() {
                         whileHover={{ scale: 1.12 }}
                         whileTap={{ scale: 0.97 }}
                       >
-                        <Globe className="h-6 w-6" />
+                        <Globe className="h-6 w-6" style={{ color: isScrolled ? '#000' : '#fff' }} />
                       </motion.button>
+                      <AnimatePresence>
+                        {showCountryDropdown && (
+                          <motion.div
+                            className="absolute right-2 left-auto top-full flex items-center justify-center"
+                            style={{
+                              transform: "translateY(8px)",
+                              pointerEvents: "auto",
+                              zIndex: 200,
+                            }}
+                            initial={{ opacity: 0, scale: 0.7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.7 }}
+                            transition={{
+                              duration: 0.22,
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 22,
+                            }}
+                          >
+                            <div
+                              className="relative flex items-center justify-center"
+                              style={{ width: 60, height: 60 }}
+                            >
+                              {countryList.map((country, i) => {
+                                const angle =
+                                  (i / countryList.length) * 2 * Math.PI -
+                                  Math.PI / 2;
+                                const radius = 18;
+                                const x = Math.cos(angle) * radius + 30;
+                                const y = Math.sin(angle) * radius + 30;
+                                return (
+                                  <motion.img
+                                    key={country.code}
+                                    src={country.flag}
+                                    alt={country.label}
+                                    className="w-6 h-6 rounded-full shadow-lg cursor-pointer absolute"
+                                    style={{
+                                      left: x,
+                                      top: y,
+                                      zIndex: 201,
+                                      pointerEvents: "auto",
+                                      border:
+                                        selectedCountry === country.code
+                                          ? "2px solid #FFD700"
+                                          : "2px solid #fff",
+                                      background: "#fff",
+                                      transform: "translate(-50%, -50%)",
+                                    }}
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1.1 }}
+                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    transition={{
+                                      type: "spring",
+                                      stiffness: 400,
+                                      damping: 20,
+                                      delay: 0.05 * i,
+                                    }}
+                                    onClick={() => handleCountrySelect(country.code)}
+                                    whileHover={{
+                                      scale: 1.2,
+                                      boxShadow: "0 0 20px #FFD700",
+                                    }}
+                                  />
+                                );
+                              })}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
                 </div>
@@ -1332,19 +1397,65 @@ export default function Navbar() {
                 <div className="flex flex-row items-center gap-4 ml-auto">
                   {/* User name (with avatar if available) */}
                   {userInfo ? (
-                    <div className="flex items-center space-x-2">
-                      {profileImg ? (
-                        <Image
-                          src={profileImg}
-                          alt="Profile"
-                          width={28}
-                          height={28}
-                          className="rounded-full object-cover border-2 border-gold-400"
-                        />
-                      ) : (
-                        <UserCircleIcon className="h-6 w-6" />
-                      )}
-                      <span className="max-w-[80px] truncate text-white text-sm font-medium">{getTruncatedName(userInfo.name)}</span>
+                    <div className="relative flex items-center space-x-2">
+                      <button
+                        onClick={() => setShowDropdown(!showDropdown)}
+                        className="flex items-center space-x-2 focus:outline-none"
+                        aria-label="User menu"
+                        type="button"
+                      >
+                        {profileImg ? (
+                          <Image
+                            src={profileImg}
+                            alt="Profile"
+                            width={28}
+                            height={28}
+                            className="rounded-full object-cover border-2 border-gold-400"
+                          />
+                        ) : (
+                          <UserCircleIcon className="h-6 w-6" />
+                        )}
+                        <span className={`max-w-[80px] truncate text-sm font-medium ${!isScrolled ? 'text-white' : 'text-brand-dark'}`}>{getTruncatedName(userInfo.name)}</span>
+                      </button>
+                      <AnimatePresence>
+                        {showDropdown && (
+                          <motion.div
+                            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.18 }}
+                          >
+                            <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-200">
+                              Signed in as
+                              <br />
+                              <span className="font-medium text-gray-900 truncate block">
+                                {userInfo.email}
+                              </span>
+                            </div>
+                            <Link
+                              href="/profile"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => setShowDropdown(false)}
+                            >
+                              Profile
+                            </Link>
+                            <Link
+                              href="/orders"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => setShowDropdown(false)}
+                            >
+                              Orders
+                            </Link>
+                            <button
+                              onClick={handleUserLogout}
+                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                              Logout
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   ) : (
                     <button
@@ -1373,17 +1484,14 @@ export default function Navbar() {
                     )}
                   </Link>
                   {/* Earth/Country icon */}
-                  <div className="flex items-center h-full">
+                  <div className="flex items-center h-full relative">
                     <div
                       ref={earthRef}
                       className="relative flex items-center justify-center h-full"
                       style={{ width: 28, height: 28, marginTop: '0px' }}
                     >
                       <motion.button
-                        className={cn(
-                          'hover:opacity-90 transition-opacity',
-                          (!isScrolled && !showMobileMenu) ? 'text-white' : 'text-brand-dark'
-                        )}
+                        className="hover:opacity-90 transition-opacity text-brand-dark"
                         aria-label="Select country"
                         style={{
                           position: 'relative',
@@ -1397,8 +1505,77 @@ export default function Navbar() {
                         whileHover={{ scale: 1.12 }}
                         whileTap={{ scale: 0.97 }}
                       >
-                        <Globe className="h-6 w-6" />
+                        <Globe className="h-6 w-6" style={{ color: isScrolled ? '#000' : '#fff' }} />
                       </motion.button>
+                      <AnimatePresence>
+                        {showCountryDropdown && (
+                          <motion.div
+                            className="absolute right-2 left-auto top-full flex items-center justify-center"
+                            style={{
+                              transform: "translateY(8px)",
+                              pointerEvents: "auto",
+                              zIndex: 200,
+                            }}
+                            initial={{ opacity: 0, scale: 0.7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.7 }}
+                            transition={{
+                              duration: 0.22,
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 22,
+                            }}
+                          >
+                            <div
+                              className="relative flex items-center justify-center"
+                              style={{ width: 60, height: 60 }}
+                            >
+                              {countryList.map((country, i) => {
+                                const angle =
+                                  (i / countryList.length) * 2 * Math.PI -
+                                  Math.PI / 2;
+                                const radius = 18;
+                                const x = Math.cos(angle) * radius + 30;
+                                const y = Math.sin(angle) * radius + 30;
+                                return (
+                                  <motion.img
+                                    key={country.code}
+                                    src={country.flag}
+                                    alt={country.label}
+                                    className="w-6 h-6 rounded-full shadow-lg cursor-pointer absolute"
+                                    style={{
+                                      left: x,
+                                      top: y,
+                                      zIndex: 201,
+                                      pointerEvents: "auto",
+                                      border:
+                                        selectedCountry === country.code
+                                          ? "2px solid #FFD700"
+                                          : "2px solid #fff",
+                                      background: "#fff",
+                                      transform: "translate(-50%, -50%)",
+                                    }}
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1.1 }}
+                                    exit={{ opacity: 0, scale: 0.5 }}
+                                    transition={{
+                                      type: "spring",
+                                      stiffness: 400,
+                                      damping: 20,
+                                      delay: 0.05 * i,
+                                    }}
+                                    onClick={() => handleCountrySelect(country.code)}
+                                    whileHover={{
+                                      scale: 1.2,
+                                      boxShadow: "0 0 20px #FFD700",
+                                    }}
+                                  />
+                                );
+                              })}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
                 </div>
