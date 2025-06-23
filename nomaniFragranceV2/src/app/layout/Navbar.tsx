@@ -78,6 +78,7 @@ export default function Navbar() {
   const [allProducts, setAllProducts] = useState<any[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
 
   const countryList = [
     { code: "US", flag: "/America.jpg", label: "America" },
@@ -215,6 +216,25 @@ export default function Navbar() {
         .catch(() => setLoadingProducts(false));
     }
   }, [showSearchModal]);
+
+  useEffect(() => {
+    function handleClickOutsideUserDropdown(event: MouseEvent) {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    }
+    if (showDropdown) {
+      document.addEventListener("mousedown", handleClickOutsideUserDropdown);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutsideUserDropdown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutsideUserDropdown);
+    };
+  }, [showDropdown]);
 
   // Function to truncate username
   const getTruncatedName = (name: string) => {
@@ -500,35 +520,45 @@ export default function Navbar() {
                       </span>
                     </button>
                     {showDropdown && (
-                      <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]">
-                        <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-200">
-                          Signed in as
-                          <br />
-                          <span className="font-medium text-gray-900 truncate block">
-                            {userInfo.email}
-                          </span>
-                        </div>
-                        <Link
-                          href="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={() => setShowDropdown(false)}
+                      <AnimatePresence>
+                        <motion.div
+                          ref={userDropdownRef}
+                          className="absolute left-1/2 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                          style={{ transform: 'translateX(-60%)' }}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          transition={{ duration: 0.18 }}
                         >
-                          Profile
-                        </Link>
-                        <Link
-                          href="/orders"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={() => setShowDropdown(false)}
-                        >
-                          Orders
-                        </Link>
-                        <button
-                          onClick={handleUserLogout}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          Logout
-                        </button>
-                      </div>
+                          <div className="px-4 py-2 text-sm text-gray-500 border-b border-gray-200">
+                            Signed in as
+                            <br />
+                            <span className="font-medium text-gray-900 truncate block">
+                              {userInfo.email}
+                            </span>
+                          </div>
+                          <Link
+                            href="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setShowDropdown(false)}
+                          >
+                            Profile
+                          </Link>
+                          <Link
+                            href="/orders"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setShowDropdown(false)}
+                          >
+                            Orders
+                          </Link>
+                          <button
+                            onClick={handleUserLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            Logout
+                          </button>
+                        </motion.div>
+                      </AnimatePresence>
                     )}
                   </div>
                 ) : (
@@ -967,7 +997,9 @@ export default function Navbar() {
                       <AnimatePresence>
                         {showDropdown && (
                           <motion.div
-                            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            ref={userDropdownRef}
+                            className="absolute left-1/2 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            style={{ transform: 'translateX(-60%)' }}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
@@ -1214,7 +1246,9 @@ export default function Navbar() {
                       <AnimatePresence>
                         {showDropdown && (
                           <motion.div
-                            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            ref={userDropdownRef}
+                            className="absolute left-1/2 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            style={{ transform: 'translateX(-60%)' }}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
@@ -1420,7 +1454,9 @@ export default function Navbar() {
                       <AnimatePresence>
                         {showDropdown && (
                           <motion.div
-                            className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            ref={userDropdownRef}
+                            className="absolute left-1/2 top-full mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-[60]"
+                            style={{ transform: 'translateX(-60%)' }}
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
