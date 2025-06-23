@@ -511,7 +511,7 @@ export default function Navbar() {
                           className="rounded-full object-cover border-2 border-gold-400"
                         />
                       ) : (
-                        <UserCircleIcon className="h-6 w-6" />
+                        <UserCircleIcon className="h-6 w-6" style={{ color: !isScrolled ? '#fff' : '#000' }} />
                       )}
                       <span
                         className={`max-w-[80px] truncate text-sm font-medium ${!isScrolled ? 'text-white' : 'text-brand-dark'}`}
@@ -990,7 +990,7 @@ export default function Navbar() {
                             className="rounded-full object-cover border-2 border-gold-400"
                           />
                         ) : (
-                          <UserCircleIcon className="h-6 w-6" />
+                          <UserCircleIcon className="h-6 w-6" style={{ color: !isScrolled ? '#fff' : '#000' }} />
                         )}
                         <span className={`max-w-[80px] truncate text-sm font-medium ${!isScrolled ? 'text-white' : 'text-brand-dark'}`}>{getTruncatedName(userInfo.name)}</span>
                       </button>
@@ -1239,7 +1239,7 @@ export default function Navbar() {
                             className="rounded-full object-cover border-2 border-gold-400"
                           />
                         ) : (
-                          <UserCircleIcon className="h-6 w-6" />
+                          <UserCircleIcon className="h-6 w-6" style={{ color: !isScrolled ? '#fff' : '#000' }} />
                         )}
                         <span className={`max-w-[80px] truncate text-sm font-medium ${!isScrolled ? 'text-white' : 'text-brand-dark'}`}>{getTruncatedName(userInfo.name)}</span>
                       </button>
@@ -1447,7 +1447,7 @@ export default function Navbar() {
                             className="rounded-full object-cover border-2 border-gold-400"
                           />
                         ) : (
-                          <UserCircleIcon className="h-6 w-6" />
+                          <UserCircleIcon className="h-6 w-6" style={{ color: !isScrolled ? '#fff' : '#000' }} />
                         )}
                         <span className={`max-w-[80px] truncate text-sm font-medium ${!isScrolled ? 'text-white' : 'text-brand-dark'}`}>{getTruncatedName(userInfo.name)}</span>
                       </button>
